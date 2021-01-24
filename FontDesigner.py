@@ -22,6 +22,14 @@
 
 import pygame, json
 
+print("FontDesigner version 1.0.0")
+print("By Johnny \"jhonnystene\" Stene.")
+print("jhonnystene@protonmail.com")
+print("This program is free software; you can redistribute it and/or modify")
+print("it under the terms of the GNU General Public License as published by")
+print("the Free Software Foundation; either version 3 of the License, or")
+print("(at your option) any later version.")
+
 pygame.init()
 pygame.display.set_caption("FontDesigner")
 screen = pygame.display.set_mode((800, 500))
@@ -81,8 +89,6 @@ try:
         savedFonts32 = data["font32"]
 except:
     print("Failed!")
-
-print(exportChar(savedFonts32[0]))
 
 def save(font16, font32):
     print("Trying to save...")

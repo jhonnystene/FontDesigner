@@ -10,9 +10,12 @@ COLOR_BLACK = (0, 0, 0)
 COLOR_LIGHTRED = (255, 102, 102)
 COLOR_GRAY = (204, 204, 204)
 
+FONT_REGULAR = pygame.font.SysFont(None, 24)
+FONT_LARGE = pygame.font.SysFont(None, 72)
+
 savedFonts16 = []
 savedFonts32 = []
-fontChars = "01235456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,/\'\""
+fontChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,/\'\""
 
 def getBlankCharacter16():
     character = []
@@ -37,9 +40,16 @@ for i in range(0, len(fontChars)):
     savedFonts16.append(getBlankCharacter16())
     savedFonts32.append(getBlankCharacter32())
 
+currentCharacter = 0
 running = True
 while running:
     screen.fill(COLOR_WHITE)
+
+    if(currentCharacter >= len(fontChars)):
+        currentCharacter = 0
+
+    if(currentCharacter < 0):
+        currentCharacter = len(fontChars) - 1
 
     # Split up left side (32x32 font)
     pygame.draw.rect(screen, COLOR_LIGHTRED, pygame.Rect(16, 66, 24, 384)) #left
@@ -74,7 +84,17 @@ while running:
     # Draw separator
     pygame.draw.line(screen, COLOR_BLACK, (400, 66), (400, 450))
 
+    # Draw current charater at top left
+    charImg = FONT_LARGE.render(fontChars[currentCharacter], True, COLOR_BLACK)
+    screen.blit(charImg, (10, 5))
+
     pygame.display.flip()
     for event in pygame.event.get():
         if(event.type == pygame.QUIT):
             running = False
+
+        if(event.type == pygame.KEYUP):
+            if(event.key == pygame.K_LEFT):
+                currentCharacter -= 1
+            elif(event.key == pygame.K_RIGHT):
+                currentCharacter += 1

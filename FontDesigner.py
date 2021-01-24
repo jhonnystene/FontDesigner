@@ -56,6 +56,18 @@ def getBlankCharacter32():
         character.append(row)
     return character
 
+def exportChar(character):
+    #print(character)
+    exported = []
+    for y in character:
+        current = ""
+        for x in y:
+            current = current + str(x)
+            if(len(current) == 8):
+                exported.append(int(current, 2))
+                current = ""
+    return exported
+
 # Init fonts
 for i in range(0, len(fontChars)):
     savedFonts16.append(getBlankCharacter16())
@@ -70,6 +82,8 @@ try:
 except:
     print("Failed!")
 
+print(exportChar(savedFonts32[0]))
+
 def save(font16, font32):
     print("Trying to save...")
     font = {}
@@ -77,6 +91,29 @@ def save(font16, font32):
     font["font32"] = font32
     with open("savedfont.json", "w") as jsonfile:
         json.dump(font, jsonfile)
+
+def export(font16, font32):
+    print("Trying to export...")
+    exportString = ""
+
+    # Save 16x16 font
+    exportString = exportString + "\nint font16[" + str(len(font16) * len(exportChar(font16[0]))) + "] = {"
+    for character in font16:
+        exportCharacter = exportChar(character)
+        for i in exportCharacter:
+            exportString = exportString + str(i) + ","
+    exportString = exportString[:-1] + "};"
+
+    # Save 32x32 font
+    exportString = exportString + "\nint font32[" + str(len(font32) * len(exportChar(font32[0]))) + "] = {"
+    for character in font32:
+        exportCharacter = exportChar(character)
+        for i in exportCharacter:
+            exportString = exportString + str(i) + ","
+    exportString = exportString[:-1] + "};"
+
+    with open("exportedfont.h", "w") as outfile:
+        outfile.write(exportString)
 
 currentCharacter = 0
 running = True
@@ -131,6 +168,11 @@ while running:
     saveImg = FONT_REGULAR.render("Save", True, COLOR_BLACK)
     screen.blit(saveImg, (105, 25))
 
+    # Draw export button at top left
+    pygame.draw.rect(screen, COLOR_BLACK, pygame.Rect(155, 18, 62, 32), 2)
+    saveImg = FONT_REGULAR.render("Export", True, COLOR_BLACK)
+    screen.blit(saveImg, (160, 25))
+
     # Draw current characters
     draw16 = savedFonts16[currentCharacter]
     draw32 = savedFonts32[currentCharacter]
@@ -183,6 +225,9 @@ while running:
                 if(event.pos[0] > 98 and event.pos[0] < 150
                     and event.pos[1] > 18 and event.pos[1] < 50):
                     save(savedFonts16, savedFonts32)
+                if(event.pos[0] > 155 and event.pos[0] < 217
+                    and event.pos[1] > 18 and event.pos[1] < 50):
+                    export(savedFonts16, savedFonts32)
 
         if(event.type == pygame.MOUSEMOTION):
             # Are we in the drawing area?

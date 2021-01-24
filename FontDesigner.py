@@ -20,7 +20,7 @@
 #
 # This is just a small app for designing fonts for arcticOS and exporting in the .h format it uses.
 
-import pygame
+import pygame, json
 
 pygame.init()
 pygame.display.set_caption("FontDesigner")
@@ -60,6 +60,23 @@ def getBlankCharacter32():
 for i in range(0, len(fontChars)):
     savedFonts16.append(getBlankCharacter16())
     savedFonts32.append(getBlankCharacter32())
+
+print("Trying to load savedfont.json...")
+try:
+    with open("savedfont.json") as jsonfile:
+        data = json.load(jsonfile)
+        savedFonts16 = data["font16"]
+        savedFonts32 = data["font32"]
+except:
+    print("Failed!")
+
+def save(font16, font32):
+    print("Trying to save...")
+    font = {}
+    font["font16"] = font16
+    font["font32"] = font32
+    with open("savedfont.json", "w") as jsonfile:
+        json.dump(font, jsonfile)
 
 currentCharacter = 0
 running = True
@@ -108,6 +125,11 @@ while running:
     # Draw current charater at top left
     charImg = FONT_LARGE.render(fontChars[currentCharacter], True, COLOR_BLACK)
     screen.blit(charImg, (10, 5))
+
+    # Draw save button at top left
+    pygame.draw.rect(screen, COLOR_BLACK, pygame.Rect(98, 18, 52, 32), 2)
+    saveImg = FONT_REGULAR.render("Save", True, COLOR_BLACK)
+    screen.blit(saveImg, (105, 25))
 
     # Draw current characters
     draw16 = savedFonts16[currentCharacter]
@@ -158,7 +180,9 @@ while running:
                             print("Clearing position " + str(clickedX) + "," + str(clickedY) + " on 16x16 font.")
                             savedFonts16[currentCharacter][clickedY][clickedX] = 0
             else: # We're in the toolbar areas
-                pass
+                if(event.pos[0] > 98 and event.pos[0] < 150
+                    and event.pos[1] > 18 and event.pos[1] < 50):
+                    save(savedFonts16, savedFonts32)
 
         if(event.type == pygame.MOUSEMOTION):
             # Are we in the drawing area?

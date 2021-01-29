@@ -19,10 +19,12 @@
 # MA 02110-1301, USA.
 #
 # This is just a small app for designing fonts for arcticOS and exporting in the .h format it uses.
+# This is no longer actually used for the development of arcticOS, I've decided that already available fonts
+# are much better than any I'll ever make.
 
 import pygame, json
 
-print("FontDesigner version 1.0.0")
+print("FontDesigner version 1.1.0")
 print("By Johnny \"jhonnystene\" Stene.")
 print("jhonnystene@protonmail.com")
 print("This program is free software; you can redistribute it and/or modify")
@@ -38,6 +40,7 @@ COLOR_WHITE = (255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 COLOR_LIGHTRED = (255, 102, 102)
 COLOR_GRAY = (204, 204, 204)
+COLOR_BLUE = (0, 0, 255)
 
 FONT_REGULAR = pygame.font.SysFont(None, 24)
 FONT_LARGE = pygame.font.SysFont(None, 72)
@@ -143,6 +146,13 @@ while running:
 
     for y in range(0, 32):
         pygame.draw.line(screen, COLOR_GRAY, (16, (y * 12) + 66), (400,(y * 12) + 66))
+        
+    # Do guidelines for 16x16
+    for x in range(0, 16):
+        pygame.draw.line(screen, COLOR_BLUE, ((x * 24) + 16, 66), ((x * 24) + 16, 450))
+
+    for y in range(0, 16):
+        pygame.draw.line(screen, COLOR_BLUE, (16, (y * 24) + 66), (400,(y * 24) + 66))
 
     # Split up right side (16x16 font)
     pygame.draw.rect(screen, COLOR_LIGHTRED, pygame.Rect(400, 66, 24, 384)) #left
